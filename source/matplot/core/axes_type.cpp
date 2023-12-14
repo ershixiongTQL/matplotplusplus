@@ -772,9 +772,16 @@ namespace matplot {
                     cmd += " nobox";
                 }
                 if (legend_->num_columns() != 0) {
-                    size_t n_strings = legend_->size();
+                    // size_t n_strings = legend_->size();
+                    size_t n_strings = 0;
                     for (size_t i = 0; i < children_.size(); ++i) {
-                        n_strings += !children_[i]->display_name().empty();
+
+                        auto const &display_name = children_[i]->display_name();
+
+                        if (display_name.empty() || display_name == "_")
+                            continue;
+                        
+                        n_strings += 2;
                     }
                     cmd += " maxrows " +
                            num2str(ceil(static_cast<double>(n_strings) /
@@ -923,7 +930,18 @@ namespace matplot {
                     if (no_legend) {
                         continue;
                     }
+
                     const auto &child = *child_it;
+
+
+                    auto legend_str = child->legend_string(legend_it, legend_end);
+
+                    const bool legend_should_hide = legend_str == child_it->get()->legend_string("_");
+
+                    if (legend_should_hide) {
+                        continue;
+                    }
+                    
                     if (!first) {
                         plot_command += ", ";
                     } else {
@@ -931,7 +949,7 @@ namespace matplot {
                     }
                     // https://stackoverflow.com/a/60624922/2983585
                     // http://gnuplot.sourceforge.net/demo_svg_5.5/custom_key.html
-                    plot_command += child->legend_string(legend_it, legend_end);
+                    plot_command += legend_str;
                 }
             }
         }

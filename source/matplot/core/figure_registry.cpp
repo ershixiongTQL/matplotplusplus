@@ -19,6 +19,15 @@ namespace matplot {
             return cfh;
         }
 
+        void global_figure_reset() {
+            std::map<size_t, figure_handle>{}.swap(global_figure_handles());
+            current_figure_handle().reset();
+        }
+
+        size_t global_figure_cnt() {
+            return global_figure_handles().size();
+        }
+
         void set_current_figure_handle(figure_handle &h) {
             current_figure_handle() = h;
         }

@@ -171,6 +171,10 @@ namespace matplot {
         template <typename T, typename U>
         using forward_or_copy =
             std::conditional_t<std::is_same_v<T, U>, const U &, U>;
+
+        void global_figure_reset();
+
+        size_t global_figure_cnt();
     }
 
     template <class T>
